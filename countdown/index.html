@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon™</title>
+    <meta name="theme-color" content="#7b8fe0">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="alternate icon" type="image/png" href="./logo-mask.png">
+    <link rel="apple-touch-icon" href="./logo-mask.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://esm.sh" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+
+    <!--
+        2026-11-06 17:30
+        ?to=2026-11-13T17:30:00%2B08:00
+    -->
+    <script>
+        window.COUNTDOWN_TARGET = "2026-11-06T17:30:00+08:00";
+    </script>
+
+    <style>
+        :root {
+            --c-blue: #79a8e2;
+            --c-purple: #9990e4;
+            --c-lavender: #a7b2e6;
+            --c-sky: #8fb6ea;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+            color: #fff;
+            font-family: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #7b8fe0;
+            background-image:
+                radial-gradient(60% 55% at 25% 70%, var(--c-blue) 0%, transparent 70%),
+                radial-gradient(55% 50% at 20% 5%, var(--c-purple) 0%, transparent 70%),
+                radial-gradient(45% 45% at 100% 85%, var(--c-sky) 0%, transparent 70%),
+                radial-gradient(50% 45% at 65% 55%, var(--c-lavender) 0%, transparent 70%),
+                linear-gradient(160deg, #9b84e6 0%, #7d93e2 50%, #5f95dc 100%);
+        }
+
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        #bg.ready {
+            opacity: 1;
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.2 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        #bg canvas {
+            display: block;
+        }
+
+        .logo {
+            position: fixed;
+            z-index: 2;
+            top: max(16px, 10vh);
+            right: max(16px, 5.6vw);
+            width: clamp(52px, 5.75vw, 110px);
+            aspect-ratio: 1;
+            background: #fff;
+            -webkit-mask: url("./logo-mask.png") center / contain no-repeat;
+            mask: url("./logo-mask.png") center / contain no-repeat;
+            -webkit-mask-source-type: luminance;
+            mask-mode: luminance;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 16px;
+            text-shadow: 0 2px 50px rgba(52, 62, 140, 0.10);
+            padding-top: 4vh;
+        }
+
+        h1 {
+            font-weight: 500;
+            font-size: clamp(44px, 8.6vw, 172px);
+            line-height: 1;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+
+
+        .sub {
+            margin-top: clamp(14px, 2.4vw, 46px);
+            font-weight: 400;
+            font-size: clamp(17px, 2.55vw, 50px);
+            letter-spacing: 0.01em;
+        }
+
+        .countdown {
+            margin-top: clamp(22px, 3.4vw, 64px);
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(6px, 1.2vw, 22px);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 2.1ch;
+        }
+
+        .num {
+            font-weight: 500;
+            font-size: clamp(30px, 4.6vw, 90px);
+            line-height: 1;
+        }
+
+        .sep {
+            font-weight: 400;
+            font-size: clamp(30px, 4.6vw, 90px);
+            line-height: 1;
+            opacity: 0.6;
+        }
+
+        .label {
+            margin-top: 0.6em;
+            font-size: clamp(10px, 0.85vw, 16px);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            opacity: 0.75;
+        }
+
+        .unit.days[hidden],
+        .sep.days[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 12.5vw;
+            }
+
+            .sub {
+                font-size: 4.4vw;
+            }
+
+            .num,
+            .sep {
+                font-size: 9vw;
+            }
+
+            .label {
+                font-size: 2.6vw;
+            }
+        }
+
+        .done .countdown {
+            display: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #bg {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bg" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="logo" role="img" aria-label="Logo"></div>
+
+    <main id="main">
+        <h1 id="title">Coming Soon™</h1>
+        <p class="sub" id="sub">See you tomorrow at 17:30 TST</p>
+
+        <div class="countdown" id="countdown" role="timer" aria-live="off">
+            <div class="unit days" id="u-days" hidden><span class="num" id="d">0</span><span class="label">days</span>
+            </div>
+            <span class="sep days" id="s-days" hidden>:</span>
+            <div class="unit"><span class="num" id="h">00</span><span class="label">hours</span></div>
+            <span class="sep">:</span>
+            <div class="unit"><span class="num" id="m">00</span><span class="label">minutes</span></div>
+            <span class="sep">:</span>
+            <div class="unit"><span class="num" id="s">00</span><span class="label">seconds</span></div>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const TZ = "Asia/Taipei";
+            const param = new URLSearchParams(location.search).get("to");
+            let target = new Date(param || window.COUNTDOWN_TARGET);
+            if (isNaN(target)) target = new Date(window.COUNTDOWN_TARGET);
+
+            const $ = (id) => document.getElementById(id);
+            const pad = (n) => String(n).padStart(2, "0");
+
+            const dayKey = (d) => new Intl.DateTimeFormat("en-CA", {timeZone: TZ}).format(d);
+            const timeStr = new Intl.DateTimeFormat("en-GB", {
+                timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false
+            }).format(target);
+
+            function subtitle(now) {
+                const t = dayKey(target);
+                if (t === dayKey(now)) return `See you today at ${timeStr} TST`;
+                if (t === dayKey(new Date(now.getTime() + 864e5))) return `See you tomorrow at ${timeStr} TST`;
+                const date = new Intl.DateTimeFormat("en-US", {timeZone: TZ, month: "short", day: "numeric"}).format(target);
+                return `See you on ${date} at ${timeStr} TST`;
+            }
+
+            let timer;
+            function tick() {
+                const now = new Date();
+                const diff = target - now;
+
+                if (diff <= 0) {
+                    clearInterval(timer);
+                    document.body.classList.add("done");
+                    $("title").textContent = "We're Live™";
+                    $("sub").textContent = `It's ${timeStr} — come on in!`;
+                    document.title = "We're Live™";
+                    return;
+                }
+
+                const total = Math.floor(diff / 1000);
+                const d = Math.floor(total / 86400);
+                const h = Math.floor((total % 86400) / 3600);
+                const m = Math.floor((total % 3600) / 60);
+                const s = total % 60;
+
+                const showDays = d > 0;
+                $("u-days").hidden = !showDays;
+                $("s-days").hidden = !showDays;
+                $("d").textContent = d;
+                $("h").textContent = pad(h);
+                $("m").textContent = pad(m);
+                $("s").textContent = pad(s);
+                $("sub").textContent = subtitle(now);
+                document.title = `${showDays ? d + "d " : ""}${pad(h)}:${pad(m)}:${pad(s)} · Coming Soon™`;
+            }
+
+            tick();
+            setTimeout(() => {
+                tick();
+                timer = setInterval(tick, 1000);
+            }, 1000 - (Date.now() % 1000));
+        })();
+    </script>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+            "three": "https://esm.sh/three@0.169.0",
+            "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three",
+            "@shadergradient/react": "https://esm.sh/@shadergradient/react@2.4.20?external=react,react-dom,three,@react-three/fiber"
+        }
+    }
+    </script>
+    <script type="module">
+        import {createElement as h} from "react";
+        import {createRoot} from "react-dom/client";
+        import {ShaderGradientCanvas, ShaderGradient} from "@shadergradient/react";
+
+        const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const el = document.getElementById("bg");
+
+        const gradientProps = {
+            control: "props",
+            animate: reduceMotion ? "off" : "on",
+            axesHelper: "off",
+            bgColor1: "#000000",
+            bgColor2: "#000000",
+            brightness: 1.8,
+            cAzimuthAngle: 186,
+            cDistance: 5.83,
+            cPolarAngle: 69,
+            cameraZoom: 1,
+            color1: "#9990E4",
+            color2: "#79A8E2",
+            color3: "#A7B2E6",
+            destination: "onCanvas",
+            embedMode: "off",
+            envPreset: "city",
+            format: "gif",
+            fov: 45,
+            frameRate: 10,
+            gizmoHelper: "hide",
+            grain: "off",
+            lightType: "env",
+            pixelDensity: 1.5,
+            positionX: 0,
+            positionY: 0.9,
+            positionZ: -0.3,
+            range: "disabled",
+            rangeEnd: 40,
+            rangeStart: 0,
+            reflection: 0.4,
+            rotationX: 45,
+            rotationY: 0,
+            rotationZ: 0,
+            shader: "defaults",
+            type: "waterPlane",
+            uAmplitude: 0,
+            uDensity: 1.2,
+            uFrequency: 0,
+            uSpeed: 0.15,
+            uStrength: 5,
+            uTime: 0,
+            wireframe: false,
+            zoomOut: false,
+        };
+
+        const BASE_ZOOM = 1.6;
+        const zoomFor = () => BASE_ZOOM * Math.max(1, (innerWidth / innerHeight) / (16 / 9));
+
+        const root = createRoot(el);
+        let currentZoom;
+        function render() {
+            const z = zoomFor();
+            if (z === currentZoom) return;
+            currentZoom = z;
+            root.render(
+                h(ShaderGradientCanvas, {
+                    style: {position: "absolute", inset: 0},
+                    pixelDensity: gradientProps.pixelDensity,
+                    fov: gradientProps.fov,
+                    pointerEvents: "none",
+                    lazyLoad: false,
+                }, h(ShaderGradient, {...gradientProps, cameraZoom: z}))
+            );
+        }
+        render();
+
+        let resizeTimer;
+        addEventListener("resize", () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(render, 200);
+        });
+
+        requestAnimationFrame(() => setTimeout(() => el.classList.add("ready"), 1000));
+    </script>
+</body>
+
+</html>
