@@ -190,9 +190,49 @@
             display: none;
         }
 
+        .enter {
+            margin-top: clamp(28px, 3.6vw, 64px);
+            display: inline-block;
+            padding: 0.7em 1.6em;
+            border-radius: 999px;
+            font-size: clamp(16px, 1.4vw, 24px);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            text-shadow: none;
+            color: #4b5bb8;
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(52, 62, 140, 0.22);
+            transition: transform .15s, opacity .25s;
+            animation: enter-in .7s cubic-bezier(.2, .8, .2, 1) backwards;
+        }
+
+        .enter[hidden] {
+            display: none;
+        }
+
+        .enter:hover {
+            opacity: 0.7;
+        }
+
+        .enter:active {
+            transform: scale(0.97);
+        }
+
+        @keyframes enter-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             #bg {
                 transition: none;
+            }
+
+            .enter {
+                animation: none;
             }
         }
     </style>
@@ -217,7 +257,25 @@
             <span class="sep">:</span>
             <div class="unit"><span class="num" id="s">00</span><span class="label">seconds</span></div>
         </div>
+
+        <a class="enter" id="enter" href="./draw/" hidden>進入抽籤</a>
     </main>
+
+    <script>
+        // 後台開啟「首頁按鈕」時才顯示
+        (function () {
+            const btn = document.getElementById("enter");
+            async function check() {
+                try {
+                    const res = await fetch("/api/me", {cache: "no-store"});
+                    if (res.ok) btn.hidden = !(await res.json()).showEntry;
+                } catch { }
+            }
+            check();
+            setInterval(() => !document.hidden && check(), 10000);
+            document.addEventListener("visibilitychange", () => !document.hidden && check());
+        })();
+    </script>
 
     <script>
         (function () {

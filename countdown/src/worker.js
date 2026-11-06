@@ -26,6 +26,11 @@ export class Lottery extends DurableObject {
         return row ? Number(row.value) : null;
     }
 
+    #showEntry() {
+        const row = this.sql.exec("SELECT value FROM meta WHERE key = 'show_entry'").toArray()[0];
+        return row?.value === "1";
+    }
+
     #count() {
         return this.sql.exec("SELECT COUNT(*) AS n FROM participants").one().n;
     }
@@ -38,7 +43,7 @@ export class Lottery extends DurableObject {
     me(tokenHash) {
         const drawnAt = this.#drawnAt();
         const p = this.#byToken(tokenHash);
-        const out = { count: this.#count(), drawn: drawnAt !== null, registered: !!p };
+        const out = { count: this.#count(), drawn: drawnAt !== null, showEntry: this.#showEntry(), registered: !!p };
         if (p) {
             out.name = p.name;
             out.topic = p.topic;
@@ -73,6 +78,7 @@ export class Lottery extends DurableObject {
     `).toArray();
         return {
             drawnAt: this.#drawnAt(),
+            showEntry: this.#showEntry(),
             participants: rows.map((r) => ({
                 id: r.id, name: r.name, topic: r.topic, createdAt: r.created_at,
                 result: r.result ?? null, resultFrom: r.result_from ?? null,
@@ -108,8 +114,13 @@ export class Lottery extends DurableObject {
     clearAll() {
         this.ctx.storage.transactionSync(() => {
             this.sql.exec("DELETE FROM participants");
-            this.sql.exec("DELETE FROM meta");
+            this.sql.exec("DELETE FROM meta WHERE key = 'drawn_at'");
         });
+        return { ok: true };
+    }
+
+    setShowEntry(show) {
+        this.sql.exec("INSERT OR REPLACE INTO meta (key, value) VALUES ('show_entry', ?)", show ? "1" : "0");
         return { ok: true };
     }
 }
@@ -186,6 +197,7 @@ async function adminApi(request, path, stub) {
         case "/admin/api/reset": res = await stub.reset(); break;
         case "/admin/api/delete": res = await stub.remove(String(body.id ?? "")); break;
         case "/admin/api/clear": res = await stub.clearAll(); break;
+        case "/admin/api/entry": res = await stub.setShowEntry(body.show === true); break;
         default: throw new HttpError(404, "Not found");
     }
     if (res.error) throw new HttpError(res.status, res.error);

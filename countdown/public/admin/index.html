@@ -126,6 +126,26 @@
             color: var(--danger);
         }
 
+        button.toggle::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+            vertical-align: 1px;
+        }
+
+        button.toggle[aria-pressed="true"] {
+            border-color: var(--ok);
+            color: var(--ok);
+        }
+
+        button.toggle[aria-pressed="true"]::before {
+            background: var(--ok);
+        }
+
         button:disabled {
             opacity: .45;
             cursor: default;
@@ -224,6 +244,7 @@
                 <p class="status" id="status">載入中…</p>
             </div>
             <div class="actions">
+                <button class="toggle" id="entry" aria-pressed="false" title="在倒數頁顯示「進入抽籤」按鈕">首頁按鈕：關</button>
                 <button class="primary" id="draw">抽籤</button>
                 <button id="reset" hidden>撤銷抽籤</button>
                 <button class="danger" id="clear">清空全部</button>
@@ -300,6 +321,9 @@
             $("draw").title = list.length < 2 ? "至少要 2 個人" : "";
             $("reset").hidden = !drawn;
             $("reset").disabled = false;
+            $("entry").disabled = false;
+            $("entry").setAttribute("aria-pressed", String(state.showEntry));
+            $("entry").textContent = state.showEntry ? "首頁按鈕：開" : "首頁按鈕：關";
             $("clear").disabled = list.length === 0;
 
             const rows = $("rows");
@@ -346,6 +370,7 @@
         $("draw").onclick = () => act("draw", {},
             state.drawnAt !== null ? "重新抽籤會覆蓋目前的結果，大家看到的會跟著改變。確定？" : `為 ${state.participants.length} 人抽籤？抽完後登記會關閉。`);
         $("reset").onclick = () => act("reset", {}, "撤銷抽籤結果並重新開放登記？");
+        $("entry").onclick = () => act("entry", {show: !state.showEntry});
         $("clear").onclick = () => act("clear", {}, "刪除所有登記與抽籤結果？無法復原。");
 
         load();
