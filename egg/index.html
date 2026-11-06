@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg</title>
+    <style>
+        @import url("https://font.emtech.cc/css/jfOpenHuninn");
+
+        body {
+            font-family: "jfOpenHuninn", sans-serif;
+        }
+
+        body,
+        html {
+            background-color: #0A0A0A;
+            color: white;
+            line-height: 1.5;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            background-color: transparent;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all;
+            transition-duration: .25s;
+        }
+
+        button:hover {
+            background-color: oklch(0.5 0 0);
+        }
+
+        .hr {
+            pointer-events: none;
+            width: 80vw;
+            height: 1px;
+            background-image: linear-gradient(to right, transparent, oklch(1 0 0 / 0.2), transparent);
+        }
+
+        .box {
+            display: flex;
+            max-width: 100vw;
+            padding: 80px;
+            gap: 100px
+        }
+
+        .box>img {
+            width: 30vw;
+            border-radius: 20px;
+        }
+
+        .price {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+        }
+
+        .price>div {
+            width: 300px;
+            background-color: oklch(0.25 0 0);
+            padding: 30px;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .price>div>li {
+            font-size: 1.1rem;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header
+        style="display: flex;justify-content: center;align-items: center;padding-right: 20px ;padding-left: 20px;border-bottom: .5px solid floralwhite; position: fixed; inset-inline: 0;z-index: 100;background-color: black;top: 0;">
+        <img src="./egg.webp" style="width: 1.5rem;padding-top: 5px;">
+        <h2>雞蛋</h2>
+        <div style="flex-grow: 1;"></div>
+        <a href="#price">
+            <button>立即購買</button>
+        </a>
+    </header>
+    <div style="display: flex;justify-content: center;align-items: center; flex-direction: column;">
+        <h1 style="font-size: 5rem;margin-top: 150px;">蛋，是雞生出來的</h1>
+        <div style="display: flex;gap: 1rem;margin-top: 50px;">
+            <a href="#price">
+                <button>立即購買</button>
+            </a>
+            <a href="#info">
+                <button>了解更多</button>
+            </a>
+        </div>
+        <img src="./egg.webp" style="width: 20rem;padding-top: 5rem;">
+        <div class="hr" id="info"></div>
+        <div class="box">
+            <img src="good_egg.png" style="width: 20vw;padding-top: 55px;">
+            <div>
+                <h2 style="font-size: 3rem;padding-top: 3rem;">最高品質的蛋，最高品質的營養</h2>
+                <h3>每一顆看似平凡的雞蛋，都在其脆弱而精緻的雙層防護殼下，包裹著大自然最精準的營養奧祕：那便是滋養生命的清澈蛋白與溫潤蛋黃。</h3>
+            </div>
+        </div>
+        <div class="box">
+            <img src="home.png">
+            <div>
+                <h2 style="font-size: 3rem;padding-top: 3rem;">能給母雞更好的環境，給家人更安心的營養。</h2>
+                <h3>位於臺灣臺北市信義計畫區的豪宅雞舍，土地面積約為2468坪，總樓地板面積為12,962坪，能給母雞更好的環境，才能給家人更安心的營養。</h3>
+            </div>
+        </div>
+        <div class="box">
+            <div>
+                <h2 style="font-size: 3rem;padding-top: 3rem;">每一顆，都由 owl 細心照料</h2>
+                <h3>《規矩不能壞》《吃了不燒心》《先把規矩立住，路才能越走越寬》《不怕虧錢嗎？怕，更怕帳本不清》《明天怎麼辦？先做》《剩下怎麼辦？倒掉》《終於好起來了；嗯，要穩》《寧可少掙點，也不能壞了規矩》 </h3>
+            </div>
+            <img src="owl.png">
+        </div>
+        <div class="hr"></div>
+        <h2 style="font-size: 3rem;padding-top: 3rem;margin-bottom: 0px;" id="price">售價</h2>
+        <h2 style="margin-bottom: 100px;">頂級的食材，親民的價格</h2>
+
+        <div class="price">
+            <div>
+                <h1>Max</h1>
+                <li>owl 的簽名</li>
+                <li>頂級雞蛋</li>
+                <li>尖峰時期最優先購買雞蛋</li>
+                <li>Plus 20x 多雞蛋</li>
+                <h1>200$/月</h1>
+                <button>選購此方案</button>
+            </div>
+            <div>
+                <h1>Pro</h1>
+                <li>高級雞蛋</li>
+                <li>尖峰時期優先購買雞蛋</li>
+                <li>Plus 5x 多雞蛋</li>
+                <h1>50$/月</h1>
+                <button>選購此方案</button>
+            </div>
+            <div>
+                <h1>Plus</h1>
+                <li>營養的雞蛋</li>
+                <h1>10$/月</h1>
+                <button>選購此方案</button>
+            </div>
+        </div>
+        <div class="hr" style="margin-top: 200px;"></div>
+        <h2 style="font-size: 3rem;padding-top: 3rem;margin-bottom: 0px;">還在等什麼呢？</h2>
+        <h2 style="margin-bottom: 50px;">立即選購 owl 的雞蛋吧！</h2>
+        <a href="#price" style="margin-bottom: 100px;">
+            <button>立即選購</button>
+        </a>
+
+    </div>
+</body>
+
+</html>
