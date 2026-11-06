@@ -66,9 +66,13 @@
             padding: 30px;
             border-radius: 30px;
             display: flex;
-            justify-content: space-between;
+            /*justify-content: space-between;*/
             align-items: center;
             flex-direction: column;
+        }
+
+        .price>div>div {
+            flex-grow: 1;
         }
 
         .price>div>li {
@@ -80,7 +84,7 @@
 
 <body>
     <header
-        style="display: flex;justify-content: center;align-items: center;padding-right: 20px ;padding-left: 20px;border-bottom: .25px solid floralwhite; position: fixed; inset-inline: 0;z-index: 100;background-color: black;top: 0;">
+        style="display: flex;justify-content: center;align-items: center;padding-right: 20px ;padding-left: 20px;border-bottom: 0.2px solid floralwhite; position: fixed; inset-inline: 0;z-index: 100;background-color: black;top: 0;">
         <img src="./egg.webp" style="width: 1.5rem;padding-top: 5px;">
         <h2 style="margin-left: 10px;">雞蛋</h2>
         <div style="flex-grow: 1;"></div>
@@ -135,24 +139,30 @@
         <div class="price">
             <div>
                 <h1>Max</h1>
-                <li>owl 的簽名</li>
-                <li>頂級雞蛋</li>
-                <li>尖峰時期最優先購買雞蛋</li>
-                <li>Plus 20x 多雞蛋</li>
+                <div>
+                    <li>owl 的簽名</li>
+                    <li>頂級雞蛋</li>
+                    <li>尖峰時期最優先購買雞蛋</li>
+                    <li>Plus 20x 多雞蛋</li>
+                </div>
                 <h1>200$/月</h1>
                 <button>選購此方案</button>
             </div>
             <div>
                 <h1>Pro</h1>
-                <li>高級雞蛋</li>
-                <li>尖峰時期優先購買雞蛋</li>
-                <li>Plus 5x 多雞蛋</li>
+                <div>
+                    <li>高級雞蛋</li>
+                    <li>尖峰時期優先購買雞蛋</li>
+                    <li>Plus 5x 多雞蛋</li>
+                </div>
                 <h1>50$/月</h1>
                 <button>選購此方案</button>
             </div>
             <div>
                 <h1>Plus</h1>
-                <li>營養的雞蛋</li>
+                <div>
+                    <li>營養的雞蛋</li>
+                </div>
                 <h1>10$/月</h1>
                 <button>選購此方案</button>
             </div>
