@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主題抽籤</title>
+    <meta name="theme-color" content="#7b8fe0">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../logo-mask.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://esm.sh" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --c-blue: #79a8e2;
+            --c-purple: #9990e4;
+            --c-lavender: #a7b2e6;
+            --c-sky: #8fb6ea;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            color: #fff;
+            font-family: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #7b8fe0;
+            background-image:
+                radial-gradient(60% 55% at 25% 70%, var(--c-blue) 0%, transparent 70%),
+                radial-gradient(55% 50% at 20% 5%, var(--c-purple) 0%, transparent 70%),
+                radial-gradient(45% 45% at 100% 85%, var(--c-sky) 0%, transparent 70%),
+                radial-gradient(50% 45% at 65% 55%, var(--c-lavender) 0%, transparent 70%),
+                linear-gradient(160deg, #9b84e6 0%, #7d93e2 50%, #5f95dc 100%);
+            background-attachment: fixed;
+        }
+
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        #bg.ready {
+            opacity: 1;
+        }
+
+        #bg canvas {
+            display: block;
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.2 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px;
+        }
+
+        h1 {
+            font-weight: 500;
+            font-size: clamp(36px, 7vw, 64px);
+            line-height: 1;
+            letter-spacing: -0.01em;
+            text-shadow: 0 2px 50px rgba(52, 62, 140, 0.10);
+        }
+
+        .card {
+            margin-top: 32px;
+            width: min(100%, 440px);
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 10px 40px rgba(52, 62, 140, 0.18);
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        h2 {
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            opacity: 0.85;
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        input {
+            width: 100%;
+            font: inherit;
+            font-size: 16px;
+            color: #fff;
+            padding: 11px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            outline: none;
+            transition: border-color .2s, background .2s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        button {
+            font: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 18px;
+            color: #4b5bb8;
+            background: #fff;
+            transition: transform .15s, opacity .2s;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        button.ghost {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.16);
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .mine {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .meta {
+            margin-top: 6px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .err {
+            font-size: 13px;
+            color: #ffe3e3;
+        }
+
+        .result {
+            margin-top: 8px;
+            font-size: clamp(26px, 6vw, 36px);
+            font-weight: 500;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .reveal {
+            animation: reveal .7s cubic-bezier(.2, .8, .2, 1) both;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(.98);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #bg {
+                transition: none;
+            }
+
+            .reveal {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bg" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <main>
+        <h1>主題抽籤</h1>
+
+        <section class="card" id="card" aria-live="polite">
+            <p class="meta" id="loading">載入中…</p>
+
+            <div id="v-form" hidden>
+                <h2 id="form-title">登記你的主題</h2>
+                <form id="form" autocomplete="off">
+                    <input id="f-name" maxlength="30" placeholder="你的名字" required>
+                    <input id="f-topic" maxlength="120" placeholder="想讓別人抽到的主題" required>
+                    <div class="row">
+                        <span class="err" id="err"></span>
+                        <span>
+                            <button type="button" class="ghost" id="cancel" hidden>取消</button>
+                            <button type="submit" id="submit">登記</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+
+            <div id="v-wait" hidden>
+                <div class="row">
+                    <h2>你登記的主題</h2>
+                    <button type="button" class="ghost" id="edit">修改</button>
+                </div>
+                <p class="mine" id="mine"></p>
+                <p class="meta" id="wait-meta"></p>
+            </div>
+
+            <div id="v-result" hidden>
+                <h2 id="result-label">你抽到的主題</h2>
+                <p class="result reveal" id="result"></p>
+                <p class="meta" id="result-meta"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const KEY = "draw-token";
+            const $ = (id) => document.getElementById(id);
+            let memToken = null;
+            const store = {
+                get() {try {return localStorage.getItem(KEY);} catch {return memToken;} },
+                set(v) {memToken = v; try {localStorage.setItem(KEY, v);} catch { } },
+                clear() {memToken = null; try {localStorage.removeItem(KEY);} catch { } },
+            };
+            let state = null;
+            let editing = false;
+
+            const show = (id) => ["loading", "v-form", "v-wait", "v-result"].forEach((v) => ($(v).hidden = v !== id));
+            const authHeaders = () => {
+                const t = store.get();
+                return t ? {Authorization: "Bearer " + t} : {};
+            };
+
+            async function load() {
+                try {
+                    const res = await fetch("/api/me", {headers: authHeaders(), cache: "no-store"});
+                    if (!res.ok) throw new Error();
+                    const next = await res.json();
+                    if (!next.registered && store.get()) store.clear(); // 被管理員刪除或清空
+                    state = next;
+                    render();
+                } catch {
+                    if (!state) $("loading").textContent = "連線失敗，請重新整理";
+                }
+            }
+
+            function render() {
+                const s = state;
+
+                if (s.drawn) {
+                    editing = false;
+                    show("v-result");
+                    const r = $("result");
+                    if (s.registered && s.result) {
+                        $("result-label").textContent = "你抽到的主題";
+                        if (r.textContent !== s.result) {
+                            r.textContent = s.result;
+                            r.classList.remove("reveal"); void r.offsetWidth; r.classList.add("reveal");
+                        }
+                        $("result-meta").textContent = `你登記的是「${s.topic}」`;
+                        r.hidden = false;
+                    } else {
+                        $("result-label").textContent = "抽籤已經結束了";
+                        $("result-meta").textContent = "這次沒有你的登記。";
+                        r.hidden = true;
+                    }
+                    return;
+                }
+
+                if (s.registered && !editing) {
+                    show("v-wait");
+                    $("mine").textContent = s.topic;
+                    $("wait-meta").textContent = `${s.name} · 目前 ${s.count} 人登記 · 抽籤後結果會出現在這裡`;
+                    return;
+                }
+
+                show("v-form");
+                $("form-title").textContent = editing ? "修改你的主題" : "登記你的主題";
+                $("submit").textContent = editing ? "儲存" : "登記";
+                $("cancel").hidden = !editing;
+            }
+
+            $("form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const btn = $("submit");
+                btn.disabled = true;
+                $("err").textContent = "";
+                try {
+                    const res = await fetch("/api/register", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json", ...authHeaders()},
+                        body: JSON.stringify({name: $("f-name").value, topic: $("f-topic").value}),
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(data.error || "登記失敗，請再試一次");
+                    if (data.token) store.set(data.token);
+                    editing = false;
+                    await load();
+                } catch (err) {
+                    $("err").textContent = err.message;
+                    load();
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            $("edit").addEventListener("click", () => {
+                editing = true;
+                $("f-name").value = state.name || "";
+                $("f-topic").value = state.topic || "";
+                $("err").textContent = "";
+                render();
+                $("f-topic").focus();
+            });
+
+            $("cancel").addEventListener("click", () => {
+                editing = false;
+                render();
+            });
+
+            setInterval(() => {if (!document.hidden && !editing) load();}, 15000);
+            document.addEventListener("visibilitychange", () => {
+                if (!document.hidden && !editing) load();
+            });
+            load();
+        })();
+    </script>
+
+    <!-- 動態背景（與倒數頁相同） -->
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+            "three": "https://esm.sh/three@0.169.0",
+            "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three",
+            "@shadergradient/react": "https://esm.sh/@shadergradient/react@2.4.20?external=react,react-dom,three,@react-three/fiber"
+        }
+    }
+    </script>
+    <script type="module">
+        import {createElement as h} from "react";
+        import {createRoot} from "react-dom/client";
+        import {ShaderGradientCanvas, ShaderGradient} from "@shadergradient/react";
+
+        const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const el = document.getElementById("bg");
+
+        const gradientProps = {
+            control: "props",
+            animate: reduceMotion ? "off" : "on",
+            axesHelper: "off",
+            bgColor1: "#000000",
+            bgColor2: "#000000",
+            brightness: 1.8,
+            cAzimuthAngle: 186,
+            cDistance: 5.83,
+            cPolarAngle: 69,
+            cameraZoom: 1,
+            color1: "#9990E4",
+            color2: "#79A8E2",
+            color3: "#A7B2E6",
+            destination: "onCanvas",
+            embedMode: "off",
+            envPreset: "city",
+            format: "gif",
+            fov: 45,
+            frameRate: 10,
+            gizmoHelper: "hide",
+            grain: "off",
+            lightType: "env",
+            pixelDensity: 1.5,
+            positionX: 0,
+            positionY: 0.9,
+            positionZ: -0.3,
+            range: "disabled",
+            rangeEnd: 40,
+            rangeStart: 0,
+            reflection: 0.4,
+            rotationX: 45,
+            rotationY: 0,
+            rotationZ: 0,
+            shader: "defaults",
+            type: "waterPlane",
+            uAmplitude: 0,
+            uDensity: 1.2,
+            uFrequency: 0,
+            uSpeed: 0.15,
+            uStrength: 5,
+            uTime: 0,
+            wireframe: false,
+            zoomOut: false,
+        };
+
+        const BASE_ZOOM = 1.6;
+        const zoomFor = () => BASE_ZOOM * Math.max(1, (innerWidth / innerHeight) / (16 / 9));
+
+        const root = createRoot(el);
+        let currentZoom;
+        function render() {
+            const z = zoomFor();
+            if (z === currentZoom) return;
+            currentZoom = z;
+            root.render(
+                h(ShaderGradientCanvas, {
+                    style: {position: "absolute", inset: 0},
+                    pixelDensity: gradientProps.pixelDensity,
+                    fov: gradientProps.fov,
+                    pointerEvents: "none",
+                    lazyLoad: false,
+                }, h(ShaderGradient, {...gradientProps, cameraZoom: z}))
+            );
+        }
+        render();
+
+        let resizeTimer;
+        addEventListener("resize", () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(render, 200);
+        });
+
+        requestAnimationFrame(() => setTimeout(() => el.classList.add("ready"), 1000));
+    </script>
+</body>
+
+</html>
